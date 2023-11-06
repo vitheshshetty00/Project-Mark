@@ -1,13 +1,16 @@
 "use client";
-import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
+import { useCanvasStore } from "@/stores/canvasStore";
+
 const StrokeSlider = () => {
-	const [strokeWidth, setStrokeWidth] = useState([3]);
+	const { strokeWidth, setStrokeWidth } = useCanvasStore();
 	return (
 		<div>
 			<div className="flex items-center justify-between mb-4">
-				<Label htmlFor="strokeWidth" className="select-none">Stroke Width</Label>
+				<Label htmlFor="strokeWidth" className="select-none">
+					Stroke Width
+				</Label>
 				<span className="text-sm ">{strokeWidth}</span>
 			</div>
 
