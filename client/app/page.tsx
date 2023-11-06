@@ -1,4 +1,5 @@
 import BottomPannel from "@/components/BottomPannel";
+import DrawingCanvas from "@/components/DrawingCanvas";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { Button } from "@/components/ui/button";
@@ -7,10 +8,12 @@ import { PanelBottom } from "lucide-react";
 
 export default function Home() {
 	return (
-		<div>
+		<div className="w-[100vw] h-[100vh]">
 			<Header />
-			<div className="flex justify-between h-[calc(100vh-3.8rem)]">
-				<main className="w-full md:w-[85%]"></main>
+			<div className="flex justify-between min-h-[90vh]">
+				<main className="w-full md:w-[85%] min-h-[85%]">
+					<DrawingCanvas />
+				</main>
 				<Sidebar />
 				<div className="md:hidden absolute bottom-4 right-4">
 					<Sheet >

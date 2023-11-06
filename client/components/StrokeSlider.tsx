@@ -7,7 +7,7 @@ const StrokeSlider = () => {
 	return (
 		<div>
 			<div className="flex items-center justify-between mb-4">
-				<Label>Stroke Width</Label>
+				<Label htmlFor="strokeWidth">Stroke Width</Label>
 				<span className="text-sm ">{strokeWidth}</span>
 			</div>
 
