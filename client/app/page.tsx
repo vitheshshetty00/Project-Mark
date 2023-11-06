@@ -9,22 +9,12 @@ import { PanelBottom } from "lucide-react";
 import { useEffect } from 'react'
 
 export default function Home() {
-	useEffect(() => {
-		const setBodyHeight = () => {
-		  document.body.style.height = `${window.innerHeight}px`;
-		};	  
-		setBodyHeight();
-		window.addEventListener('resize', setBodyHeight);
-	  
-		return () => {
-		  window.removeEventListener('resize', setBodyHeight);
-		};
-	  }, []);
+	
 	return (
 		<div className="md:w-[100vw] md:h-[100vh]">
 			<Header />
 			<div className="flex justify-between min-h-[90vh]">
-				<main className="w-full md:w-[85%] min-h-[85%]">
+				<main className="w-full h-[90vh] md:w-[85%] min-h-[85%]">
 					<DrawingCanvas />
 				</main>
 				<Sidebar />
