@@ -8,7 +8,7 @@ const DashGapSlider = () => {
 	return (
 		<div>
 			<div className="flex items-center justify-between mb-4">
-				<Label htmlFor="gapWidth">Gap Width</Label>
+				<Label htmlFor="gapWidth" className="select-none">Gap Width</Label>
 				<span className="text-sm ">{dashGap}</span>
 			</div>
 

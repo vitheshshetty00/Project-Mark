@@ -14,7 +14,7 @@ const ColorPicker = () => {
 	const [color, setColor] = useState("#000");
 	return (
 		<div>
-			<Label htmlFor="strokeColor">Stroke Color</Label>
+			<Label htmlFor="strokeColor" className="select-none">Stroke Color</Label>
 			<Popover>
 				<PopoverTrigger asChild>
 					<Button
