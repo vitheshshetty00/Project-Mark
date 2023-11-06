@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 
+type AppTouchEvent = TouchEvent
 interface Point {
 	x: number;
 	y: number;
@@ -41,7 +42,7 @@ export default function useDraw(onDraw: (draw: DrawProps) => void) {
 			const y = clientY - rect.top;
 			return { x, y };
 		};
-		const handleInteraction = (e: MouseEvent | TouchEvent) => {
+		const handleInteraction = (e: MouseEvent | AppTouchEvent) => {
 			if (!mouseDown) return;
 
 			const canvasElement = canvasRef.current;
@@ -52,8 +53,7 @@ export default function useDraw(onDraw: (draw: DrawProps) => void) {
 
 			if (e instanceof MouseEvent) {
 				currentPoint = computePointInCanvas(e.clientX, e.clientY);
-			}
-			if (e instanceof TouchEvent) {
+			}else {
 				currentPoint = computePointInCanvas(
 					e.touches[0].clientX,
 					e.touches[0].clientY

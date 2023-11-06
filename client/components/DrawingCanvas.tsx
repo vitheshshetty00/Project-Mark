@@ -60,6 +60,7 @@ const DrawingCanvas = () => {
                 id="canvas"
 				ref={canvasRef}
 				onMouseDown={onInteractionStart}
+                onTouchStart={onInteractionStart}
 				className="rounded-md w-full h-full border bg-white"
 			/>
 		</div>
