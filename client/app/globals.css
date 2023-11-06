@@ -60,6 +60,12 @@
   width: 14px !important;
   border-radius: 3px !important;
 }
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
  
 @layer base {
   * {
