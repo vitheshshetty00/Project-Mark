@@ -8,6 +8,7 @@ import { useCanvasStore } from "@/stores/canvasStore";
 const DrawingCanvas = () => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { strokeColor, strokeWidth, gapWidth } = useCanvasStore();
+    
 	const draw = useCallback(
 		({ ctx, currentPoint, prevPoint }: DrawProps) => {
 			const startPoint = prevPoint ?? currentPoint;
@@ -56,6 +57,7 @@ const DrawingCanvas = () => {
 			</Button>
 
 			<canvas
+                id="canvas"
 				ref={canvasRef}
 				onMouseDown={onMouseDown}
 				className="rounded-md w-full h-full border bg-white"
