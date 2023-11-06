@@ -14,7 +14,7 @@ export default function Home() {
 		<div className="md:w-[100vw] md:h-[100vh]">
 			<Header />
 			<div className="flex justify-between min-h-[90vh]">
-				<main className="w-full h-[90vh] md:w-[85%] min-h-[85%]">
+				<main className="w-full h-[80vh] md:w-[85%] min-h-[85%]">
 					<DrawingCanvas />
 				</main>
 				<Sidebar />
