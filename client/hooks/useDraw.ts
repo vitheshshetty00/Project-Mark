@@ -17,7 +17,7 @@ export default function useDraw(onDraw: (draw:DrawProps) => void){
 
     const [mouseDown, setMouseDown] = useState(false)
 
-    const onMouseDown = () =>{
+    const onInteractionStart = () =>{
         setMouseDown(true)
     }
 
@@ -32,24 +32,33 @@ export default function useDraw(onDraw: (draw:DrawProps) => void){
     }
 
     useEffect(() => {
-        const computePointInCanvas = (e: MouseEvent) =>{
+        const computePointInCanvas = (clientX:number,clientY:number) =>{
             const canvasElement = canvasRef.current
             if(!canvasElement) return
 
             const rect = canvasElement.getBoundingClientRect()
-            const x= e.clientX - rect.left
-            const y = e.clientY - rect.top
+            const x= clientX - rect.left
+            const y = clientY - rect.top
             return {x,y}
 
         }
-        const handleMouseMove = (e:MouseEvent) =>{
+        const handleMouseMove = (e:MouseEvent | TouchEvent) =>{
             if(!mouseDown) return
 
             const canvasElement = canvasRef.current
             if(!canvasElement) return
 
             const  ctx= canvasElement.getContext("2d")
-            const currentPoint = computePointInCanvas(e)
+            let currentPoint
+
+            if(e instanceof MouseEvent)
+            {
+                currentPoint = computePointInCanvas(e.clientX,e.clientY)
+            }
+            if(e instanceof TouchEvent)
+            {
+                currentPoint = computePointInCanvas(e.touches[0].clientX,e.touches[0].clientY)
+            }
 
             if(!ctx || !currentPoint) return
 
@@ -58,21 +67,21 @@ export default function useDraw(onDraw: (draw:DrawProps) => void){
             
         }
 
-        const handleMouseUp = ()=>{
+        const onInteractionEnd = ()=>{
             setMouseDown(false)
             prevPointRef.current = undefined
 
         }
          
         window.addEventListener('mousemove',handleMouseMove)
-        window.addEventListener('mouseup',handleMouseUp)
+        window.addEventListener('mouseup',onInteractionEnd)
     
         return  () => {
             window.removeEventListener('mousemove',handleMouseMove)
-            window.removeEventListener('mouseup',handleMouseUp)
+            window.removeEventListener('mouseup',onInteractionEnd)
         }
     }, [mouseDown,onDraw]);
 
-    return {canvasRef,onMouseDown,clear}
+    return {canvasRef,onInteractionStart,clear}
 }
 

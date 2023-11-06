@@ -28,7 +28,7 @@ const DrawingCanvas = () => {
 		[strokeColor, strokeWidth, gapWidth]
 	);
 
-	const { canvasRef, onMouseDown, clear } = useDraw(draw);
+	const { canvasRef, onInteractionStart, clear } = useDraw(draw);
 
 	useEffect(() => {
 		const setCanvasDimensions = () => {
@@ -59,7 +59,7 @@ const DrawingCanvas = () => {
 			<canvas
                 id="canvas"
 				ref={canvasRef}
-				onMouseDown={onMouseDown}
+				onMouseDown={onInteractionStart}
 				className="rounded-md w-full h-full border bg-white"
 			/>
 		</div>
