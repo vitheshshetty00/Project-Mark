@@ -19,10 +19,12 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
+import { useRouter } from 'next/navigation'
 
 type joinRoomForm = z.infer<typeof joinRoomSchema>;
 
 const JoinRoomButton = () => {
+    const router = useRouter()
 	const form = useForm<joinRoomForm>({
 		resolver: zodResolver(joinRoomSchema),
 		defaultValues: {
@@ -30,8 +32,8 @@ const JoinRoomButton = () => {
 			roomId: "",
 		},
 	});
-	const onSubmit = (values: joinRoomForm) => {
-		console.log(values);
+	const onSubmit = ({roomId}: joinRoomForm) => {
+		router.replace(`/${roomId}`)
 	};
 	return (
 		<Dialog>

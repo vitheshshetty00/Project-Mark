@@ -1,3 +1,4 @@
+"use client"
 import BottomPannel from "@/components/BottomPannel";
 import DrawingCanvas from "@/components/DrawingCanvas";
 import Header from "@/components/Header";

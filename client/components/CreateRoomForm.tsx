@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import CopyButton from "./CopyButton";
+import { useRouter } from 'next/navigation'
 
 interface createRoomFormProps {
 	roomId: string;
@@ -23,14 +24,15 @@ interface createRoomFormProps {
 type createRoomForm = z.infer<typeof createRoomSchema>;
 
 const CreateRoomForm = ({ roomId }: createRoomFormProps) => {
+    const router = useRouter()
 	const form = useForm<createRoomForm>({
 		resolver: zodResolver(createRoomSchema),
 		defaultValues: {
 			username: "",
 		},
 	});
-	const onSubmit = (values: createRoomForm) => {
-		console.log(values);
+	const onSubmit = () => {
+		router.replace(`/${roomId}`)
 	};
 
 	return (
