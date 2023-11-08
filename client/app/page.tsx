@@ -6,12 +6,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import CopyButton from "@/components/CopyButton";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import JoinRoomButton from "@/components/JoinRoomButton";
+import CreateRoomForm from "@/components/CreateRoomForm";
 
 export default function Home() {
 	const roomId = nanoid();
@@ -28,32 +25,14 @@ export default function Home() {
 					</CardDescription>{" "}
 				</CardHeader>
 				<CardContent className="flex flex-col space-y-4">
-					<form className="flex flex-col space-y-4">
-						<div>
-							<Label htmlFor="name" className="font-bold">
-								Username
-							</Label>
-							<Input placeholder="Mr.Marker" />
-						</div>
-
-						<div>
-							<Label htmlFor="roomId" className="font-bold">
-								Room ID
-							</Label>
-							<div className="flex h-10 w-full justify-between items-center  rounded-md border bg-background px-3 py-2 text-muted-foreground text-sm">
-								<span>{roomId}</span>
-								<CopyButton value={roomId} />
-							</div>
-						</div>
-						<Button className="w-full">Create a Room</Button>
-					</form>
+					<CreateRoomForm roomId={roomId} />
 
 					<div className="flex space-x-2 items-center justify-center ">
 						<Separator className="w-[45%]" />
 						<span className="text-muted-foreground text-xs">OR</span>
 						<Separator className="w-[45%]" />
 					</div>
-					<JoinRoomButton/>
+					<JoinRoomButton />
 				</CardContent>
 			</Card>
 		</div>
