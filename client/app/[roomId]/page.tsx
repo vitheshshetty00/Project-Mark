@@ -24,7 +24,7 @@ export default function Home() {
 								<PanelBottom  />
 							</Button>
 						</SheetTrigger>
-						<SheetContent side={"bottom"}>
+						<SheetContent side={"right"}>
 							<BottomPannel/>
 						</SheetContent>
 					</Sheet>

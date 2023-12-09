@@ -4,7 +4,10 @@ import { Label } from "@/components/ui/label";
 import { useCanvasStore } from "@/stores/canvasStore";
 
 const DashGapSlider = () => {
-	const { gapWidth, setGapWidth } = useCanvasStore();
+	const [gapWidth, setGapWidth] = useCanvasStore((state) => [
+		state.gapWidth,
+		state.setGapWidth,
+	]);
 	return (
 		<div>
 			<div className="flex items-center justify-between mb-4">

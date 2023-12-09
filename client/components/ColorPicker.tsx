@@ -11,7 +11,10 @@ import { HexAlphaColorPicker } from "react-colorful";
 import { useCanvasStore } from "@/stores/canvasStore";
 
 const ColorPicker = () => {
-	const { strokeColor, setStrokeColor } = useCanvasStore();
+	const [strokeColor, setStrokeColor] = useCanvasStore((state) => [
+		state.strokeColor,
+		state.setStrokeColor,
+	]);
 	return (
 		<div>
 			<Label htmlFor="strokeColor" className="select-none">

@@ -9,11 +9,13 @@ import {
 import { Separator } from "@/components/ui/separator";
 import JoinRoomButton from "@/components/JoinRoomButton";
 import CreateRoomForm from "@/components/CreateRoomForm";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function Home() {
 	const roomId = nanoid();
 	return (
 		<div className="h-screen w-full flex items-center justify-center">
+			<ThemeToggle className="fixed right-[5vw] top-5 md:right-5" />
 			<Card className="w-[90vw] max-w-[400px] ">
 				<CardHeader>
 					<CardTitle className="font-bold">

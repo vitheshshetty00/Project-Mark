@@ -4,11 +4,25 @@ import { Button } from "./ui/button";
 
 import useDraw, { type DrawProps } from "@/hooks/useDraw";
 import { useCanvasStore } from "@/stores/canvasStore";
+import { useRouter } from "next/router";
+import { useUserState } from "@/stores/userStore";
 
 const DrawingCanvas = () => {
+	const router = useRouter();
 	const containerRef = useRef<HTMLDivElement>(null);
-	const { strokeColor, strokeWidth, gapWidth } = useCanvasStore();
+	const strokeColor =useCanvasStore(state=>state.strokeColor);
     
+	const strokeWidth =useCanvasStore(state=>state.strokeWidth);
+    
+	const gapWidth  = useCanvasStore(state=>state.gapWidth);
+    
+	const user = useUserState(state => state.user)
+	useEffect(()=>{
+		if(!user){
+			router.replace('/')
+		}
+	},[user])
+
 	const draw = useCallback(
 		({ ctx, currentPoint, prevPoint }: DrawProps) => {
 			const startPoint = prevPoint ?? currentPoint;

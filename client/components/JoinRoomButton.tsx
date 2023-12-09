@@ -9,6 +9,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import * as z from "zod";
+import { nanoid } from "nanoid";
 import { joinRoomSchema } from "@/lib/validations/joinRoomSchema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,12 +20,14 @@ import {
 	FormItem,
 	FormMessage,
 } from "@/components/ui/form";
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation";
+import { useUserState } from "@/stores/userStore";
 
 type joinRoomForm = z.infer<typeof joinRoomSchema>;
 
 const JoinRoomButton = () => {
-    const router = useRouter()
+	const router = useRouter();
+	const setUser = useUserState((state) => state.setUser);
 	const form = useForm<joinRoomForm>({
 		resolver: zodResolver(joinRoomSchema),
 		defaultValues: {
@@ -32,8 +35,12 @@ const JoinRoomButton = () => {
 			roomId: "",
 		},
 	});
-	const onSubmit = ({roomId}: joinRoomForm) => {
-		router.replace(`/${roomId}`)
+	const onSubmit = ({ roomId, username }: joinRoomForm) => {
+		router.replace(`/${roomId}`);
+		setUser({
+			id: nanoid(),
+			name: username,
+		});
 	};
 	return (
 		<Dialog>

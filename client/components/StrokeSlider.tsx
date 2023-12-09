@@ -4,7 +4,10 @@ import { Label } from "@/components/ui/label";
 import { useCanvasStore } from "@/stores/canvasStore";
 
 const StrokeSlider = () => {
-	const { strokeWidth, setStrokeWidth } = useCanvasStore();
+	const [strokeWidth, setStrokeWidth] = useCanvasStore((state) => [
+		state.strokeWidth,
+		state.setStrokeWidth,
+	]);
 	return (
 		<div>
 			<div className="flex items-center justify-between mb-4">

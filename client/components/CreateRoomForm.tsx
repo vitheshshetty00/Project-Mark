@@ -3,6 +3,7 @@
 import * as z from "zod";
 import { createRoomSchema } from "@/lib/validations/createRoomSchema";
 import { useForm } from "react-hook-form";
+import { nanoid } from "nanoid";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import CopyButton from "./CopyButton";
 import { useRouter } from 'next/navigation'
+import { useUserState } from '@/stores/userStore'
 
 interface createRoomFormProps {
 	roomId: string;
@@ -25,14 +27,19 @@ type createRoomForm = z.infer<typeof createRoomSchema>;
 
 const CreateRoomForm = ({ roomId }: createRoomFormProps) => {
     const router = useRouter()
+	const setUser = useUserState(state => state.setUser)
 	const form = useForm<createRoomForm>({
 		resolver: zodResolver(createRoomSchema),
 		defaultValues: {
 			username: "",
 		},
 	});
-	const onSubmit = () => {
+	const onSubmit = ({username}:createRoomForm) => {
 		router.replace(`/${roomId}`)
+		setUser({
+			id:nanoid(),
+			name:username
+		})
 	};
 
 	return (
