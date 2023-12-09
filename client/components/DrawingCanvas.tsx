@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 
 import useDraw, { type DrawProps } from "@/hooks/useDraw";
 import { useCanvasStore } from "@/stores/canvasStore";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useUserState } from "@/stores/userStore";
 
 const DrawingCanvas = () => {
