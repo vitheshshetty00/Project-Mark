@@ -54,6 +54,11 @@ const CreateRoomForm = ({ roomId }: createRoomFormProps) => {
 				description:message
 			})
 		})
+
+		return () =>{
+			socket.off('room-joined')
+			socket.off('room-not-found')
+		}
 	},[])
 
 	
