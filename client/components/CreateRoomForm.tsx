@@ -22,6 +22,7 @@ import { useUserState } from '@/stores/userStore'
 import { RoomJoinedData } from '@/types/index'
 import { socket } from '@/lib/socket'
 import { useEffect } from "react";
+import { useToast } from "./ui/use-toast";
 
 
 interface createRoomFormProps {
@@ -31,6 +32,7 @@ type createRoomForm = z.infer<typeof createRoomSchema>;
 
 const CreateRoomForm = ({ roomId }: createRoomFormProps) => {
     const router = useRouter()
+	const {toast} = useToast();
 	const setUser = useUserState(state => state.setUser)
 	const form = useForm<createRoomForm>({
 		resolver: zodResolver(createRoomSchema),
@@ -46,7 +48,15 @@ const CreateRoomForm = ({ roomId }: createRoomFormProps) => {
 			setUser(user)
 			router.replace(`/${roomId}`)
 		})
+		socket.on('room-not-found',({message}:{message:string})=>{
+			toast({
+				title:'Failed to Join Room',
+				description:message
+			})
+		})
 	},[])
+
+	
 
 	return (
 		<Form {...form}>
