@@ -1,8 +1,8 @@
 import { Server, type Socket } from "socket.io";
 import { JoinRoomData } from "./types/index";
-import { nanoid } from "nanoid";
 import { joinRoomSchema } from "./lib/validations/JoinRoomSchema";
 import { z } from "zod";
+import { getRoomMembers, addUser, removeUser, getUser } from "./data/users";
 
 
 const express = require("express");
@@ -25,12 +25,24 @@ function isRoomCreated(roomId: string) {
 function joinRoom(socket: Socket, roomId: string, username: string) {
     socket.join(roomId)
     const user = {
-        id: nanoid(),
+        id: socket.id,
         username
     }
     console.log(user)
-    socket.emit('room-joined', { user, roomId })
+    addUser({ ...user, roomId })
+    const members = getRoomMembers(roomId)
+    socket.emit('room-joined', { user, roomId, members })
+    socket.to(roomId).emit('update-members', members)
 }
+
+const leaveRoom = (roomId: string, socket: Socket) => {
+
+    removeUser(socket.id)
+    const members = getRoomMembers(roomId)
+    socket.to(roomId).emit('update-members', members)
+    socket.leave(roomId)
+}
+
 function validateJoinData(socket: Socket, joinRoomData: JoinRoomData) {
     try {
         return joinRoomSchema.parse(joinRoomData)
@@ -42,6 +54,8 @@ function validateJoinData(socket: Socket, joinRoomData: JoinRoomData) {
         }
     }
 }
+
+
 
 io.on('connection', socket => {
     socket.on('create-room', (joinRoomData: JoinRoomData) => {
@@ -66,10 +80,13 @@ io.on('connection', socket => {
             message: "Room does'nt exist or not created yet."
         })
     })
-    socket.on('leave-room',(roomId:string)=>{
-        socket.leave(roomId)
-        console.log(roomId);
-        
+    socket.on('leave-room', (roomId: string) => {
+        leaveRoom(roomId, socket)
+    })
+
+    socket.on('disconnect', () => {
+        const user = getUser(socket.id)
+        if (user) leaveRoom(user.roomId, socket)
     })
 })
 

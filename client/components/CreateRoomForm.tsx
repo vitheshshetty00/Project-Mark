@@ -16,14 +16,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import CopyButton from "./CopyButton";
-import { useRouter } from 'next/navigation'
-import { useUserState } from '@/stores/userStore'
+import { useRouter } from "next/navigation";
+import { useUserState } from "@/stores/userStore";
 
-import { RoomJoinedData } from '@/types/index'
-import { socket } from '@/lib/socket'
+import { RoomJoinedData } from "@/types/index";
+import { socket } from "@/lib/socket";
 import { useEffect } from "react";
 import { useToast } from "./ui/use-toast";
-
+import { useMembersStore } from "@/stores/membersStore";
 
 interface createRoomFormProps {
 	roomId: string;
@@ -31,40 +31,41 @@ interface createRoomFormProps {
 type createRoomForm = z.infer<typeof createRoomSchema>;
 
 const CreateRoomForm = ({ roomId }: createRoomFormProps) => {
-    const router = useRouter()
-	const {toast} = useToast();
-	const setUser = useUserState(state => state.setUser)
+	const router = useRouter();
+	const { toast } = useToast();
+	const setUser = useUserState((state) => state.setUser);
+	const setMembers = useMembersStore(state => state.setMembers)
+
 	const form = useForm<createRoomForm>({
 		resolver: zodResolver(createRoomSchema),
 		defaultValues: {
 			username: "",
 		},
 	});
-	const onSubmit = ({username}:createRoomForm) => {
-		socket.emit('create-room',{roomId,username})
+	const onSubmit = ({ username }: createRoomForm) => {
+		socket.emit("create-room", { roomId, username });
 	};
-	useEffect(()=>{
-		 const handleError=({message}:{message:string})=>{
+	useEffect(() => {
+		const handleError = ({ message }: { message: string }) => {
 			toast({
-				title:'Failed to Join the Room',
-				description:message
-			})
-		}
-		socket.on('room-joined',({user,roomId}:RoomJoinedData)=>{
-			setUser(user)
-			router.replace(`/${roomId}`)
-		})
-		socket.on('room-not-found',handleError)
-		socket.on('invalid-data',handleError)
+				title: "Failed to Join the Room",
+				description: message,
+			});
+		};
+		socket.on("room-joined", ({ user, roomId, members }: RoomJoinedData) => {
+			setUser(user);
+			setMembers(members)
+			router.replace(`/${roomId}`);
+		});
+		socket.on("room-not-found", handleError);
+		socket.on("invalid-data", handleError);
 
-		return () =>{
-			socket.off('room-joined')
-			socket.off('room-not-found')
-			socket.off('invalid-data')
-		}
-	},[])
-
-	
+		return () => {
+			socket.off("room-joined");
+			socket.off("room-not-found");
+			socket.off("invalid-data");
+		};
+	}, []);
 
 	return (
 		<Form {...form}>
