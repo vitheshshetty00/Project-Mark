@@ -3,7 +3,6 @@
 import * as z from "zod";
 import { createRoomSchema } from "@/lib/validations/createRoomSchema";
 import { useForm } from "react-hook-form";
-import { nanoid } from "nanoid";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +19,11 @@ import CopyButton from "./CopyButton";
 import { useRouter } from 'next/navigation'
 import { useUserState } from '@/stores/userStore'
 
+import { RoomJoinedData } from '@/types/index'
+import { socket } from '@/lib/socket'
+import { useEffect } from "react";
+
+
 interface createRoomFormProps {
 	roomId: string;
 }
@@ -35,12 +39,14 @@ const CreateRoomForm = ({ roomId }: createRoomFormProps) => {
 		},
 	});
 	const onSubmit = ({username}:createRoomForm) => {
-		router.replace(`/${roomId}`)
-		setUser({
-			id:nanoid(),
-			name:username
-		})
+		socket.emit('create-room',{roomId,username})
 	};
+	useEffect(()=>{
+		socket.on('room-joined',({user,roomId}:RoomJoinedData)=>{
+			setUser(user)
+			router.replace(`/${roomId}`)
+		})
+	},[])
 
 	return (
 		<Form {...form}>
