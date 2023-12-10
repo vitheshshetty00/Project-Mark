@@ -44,20 +44,23 @@ const CreateRoomForm = ({ roomId }: createRoomFormProps) => {
 		socket.emit('create-room',{roomId,username})
 	};
 	useEffect(()=>{
+		 const handleError=({message}:{message:string})=>{
+			toast({
+				title:'Failed to Join the Room',
+				description:message
+			})
+		}
 		socket.on('room-joined',({user,roomId}:RoomJoinedData)=>{
 			setUser(user)
 			router.replace(`/${roomId}`)
 		})
-		socket.on('room-not-found',({message}:{message:string})=>{
-			toast({
-				title:'Failed to Join Room',
-				description:message
-			})
-		})
+		socket.on('room-not-found',handleError)
+		socket.on('invalid-data',handleError)
 
 		return () =>{
 			socket.off('room-joined')
 			socket.off('room-not-found')
+			socket.off('invalid-data')
 		}
 	},[])
 
