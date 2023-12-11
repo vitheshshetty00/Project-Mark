@@ -2,19 +2,35 @@ import { useMembersStore } from "@/stores/membersStore";
 import { ScrollArea } from "./ui/scroll-area";
 import { useEffect } from "react";
 import { socket } from "@/lib/socket";
+import { Notification } from '@/types/index'
+import { useToast } from "./ui/use-toast";
+
 const Members = () => {
+
+
 	const [members,setMembers] = useMembersStore(state => [
 		state.members,
 		state.setMembers
 	])
 
+	const {toast} = useToast()
+
 	useEffect(()=>{
 		socket.on('update-members',members => {
 			setMembers(members)
 		})
+		
+		socket.on('notification',({title,description}:Notification) =>{
+			toast({
+				title,
+				description
+			})
+
+		})
 
 		return ()=>{
 			socket.off('update-members')
+			socket.off('notification')
 		}
 
 	},[])

@@ -33,13 +33,26 @@ function joinRoom(socket: Socket, roomId: string, username: string) {
     const members = getRoomMembers(roomId)
     socket.emit('room-joined', { user, roomId, members })
     socket.to(roomId).emit('update-members', members)
+    socket.to(roomId).emit('notification',{
+        title:'New member Joined.',
+        description:`Welcome ${username} to the room.`
+    })
 }
 
-const leaveRoom = (roomId: string, socket: Socket) => {
+const leaveRoom = ( socket: Socket) => {
+    const user=getUser(socket.id)
+
+    if(!user) return
+
+    const {username,roomId} = user
 
     removeUser(socket.id)
     const members = getRoomMembers(roomId)
     socket.to(roomId).emit('update-members', members)
+    socket.to(roomId).emit('notification',{
+        title:'Member Left!.',
+        description: `${username} left the room.`
+    })
     socket.leave(roomId)
 }
 
@@ -81,12 +94,11 @@ io.on('connection', socket => {
         })
     })
     socket.on('leave-room', (roomId: string) => {
-        leaveRoom(roomId, socket)
+        leaveRoom( socket)
     })
 
     socket.on('disconnect', () => {
-        const user = getUser(socket.id)
-        if (user) leaveRoom(user.roomId, socket)
+        leaveRoom(socket)
     })
 })
 
