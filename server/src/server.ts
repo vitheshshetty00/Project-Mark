@@ -3,6 +3,7 @@ import { JoinRoomData } from "./types/index";
 import { joinRoomSchema } from "./lib/validations/JoinRoomSchema";
 import { z } from "zod";
 import { getRoomMembers, addUser, removeUser, getUser } from "./data/users";
+import { SocketAddress } from "net";
 
 
 const express = require("express");
@@ -33,24 +34,24 @@ function joinRoom(socket: Socket, roomId: string, username: string) {
     const members = getRoomMembers(roomId)
     socket.emit('room-joined', { user, roomId, members })
     socket.to(roomId).emit('update-members', members)
-    socket.to(roomId).emit('notification',{
-        title:'New member Joined.',
-        description:`Welcome ${username} to the room.`
+    socket.to(roomId).emit('notification', {
+        title: 'New member Joined.',
+        description: `Welcome ${username} to the room.`
     })
 }
 
-const leaveRoom = ( socket: Socket) => {
-    const user=getUser(socket.id)
+const leaveRoom = (socket: Socket) => {
+    const user = getUser(socket.id)
 
-    if(!user) return
+    if (!user) return
 
-    const {username,roomId} = user
+    const { username, roomId } = user
 
     removeUser(socket.id)
     const members = getRoomMembers(roomId)
     socket.to(roomId).emit('update-members', members)
-    socket.to(roomId).emit('notification',{
-        title:'Member Left!.',
+    socket.to(roomId).emit('notification', {
+        title: 'Member Left!.',
         description: `${username} left the room.`
     })
     socket.leave(roomId)
@@ -93,8 +94,21 @@ io.on('connection', socket => {
             message: "Room does'nt exist or not created yet."
         })
     })
+
+    socket.on('client-ready', (roomId: string) => {
+        const members = getRoomMembers(roomId)
+        const roomAdmin = members[0]
+
+        socket.to(roomAdmin.id).emit('get-current-canvas-state')
+    })
+
+    socket.on('current-canvas-state',({canvasState,roomId}:{canvasState:string,roomId:string})=>{
+        const members = getRoomMembers(roomId)
+        socket.to(members[members.length-1].id).emit('canvas-state-to-new-member',canvasState)
+    })
+
     socket.on('leave-room', (roomId: string) => {
-        leaveRoom( socket)
+        leaveRoom(socket)
     })
 
     socket.on('disconnect', () => {

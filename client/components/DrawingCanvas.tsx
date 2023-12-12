@@ -4,11 +4,13 @@ import { Button } from "./ui/button";
 
 import useDraw, { type DrawProps } from "@/hooks/useDraw";
 import { useCanvasStore } from "@/stores/canvasStore";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useUserState } from "@/stores/userStore";
+import { socket } from "@/lib/socket";
 
 const DrawingCanvas = () => {
 	const router = useRouter();
+	const params= useParams();
 	const containerRef = useRef<HTMLDivElement>(null);
 	const strokeColor =useCanvasStore(state=>state.strokeColor);
     
@@ -56,6 +58,32 @@ const DrawingCanvas = () => {
 		window.addEventListener("resize", setCanvasDimensions);
 		return () => window.removeEventListener("resize", setCanvasDimensions);
 	}, []);
+
+	useEffect(()=>{
+		const ctx = canvasRef.current?.getContext('2d')
+
+		socket.emit('client-ready',params.roomId)
+
+		socket.on('get-current-canvas-state',()=>{
+			const canvasState = canvasRef.current?.toDataURL()
+
+			if(!canvasState) return
+
+			socket.emit('current-canvas-state',{canvasState,roomId:params.roomId})
+		})
+
+		socket.on('canvas-state-to-new-member',(canvasState:string) =>{
+			const img = new Image()
+			img.src=canvasState 	
+			img.onload = () => {
+				if (canvasRef.current && ctx) {
+					ctx.drawImage(img, 0, 0, canvasRef.current.width, canvasRef.current.height);
+				}
+			}
+		})
+
+		
+	},[params.roomId])
 
 	return (
 		<div
